@@ -1,0 +1,33 @@
+val regDFSchema = regDF.schema
+      val registrationDfSchema = regDF
+        .selectExpr(ControlPlaneUtils.getCPCalledColName + " as " + ControlPlaneUtils.getMSISDNColumnName, ControlPlaneUtils.getCPSubscriberIDColName,
+          ControlPlaneUtils.getCPTransactionStartTimeColName, ControlPlaneUtils.getCPCallTimestampColName, "1 as reachable").schema
+      val encoder = RowEncoder.apply(registrationDfSchema)
+      val registrationDF = regDF.flatMap(row => {
+        var buffer = mutable.Buffer.empty[Row]
+        val rc = row.getLong(regDFSchema.fieldIndex(ControlPlaneUtils.getCPResponseCodeColName))
+        val callingPartyTuple = Seq(row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPCallingColName)),
+          row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPSubscriberIDColName)),
+          row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPTransactionStartTimeColName)),
+          row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPCallTimestampColName)), 1)
+        val calledPartyTuple = {
+          if (rc == Constants.REGISTRATION_FAILURES_RESPONSE_CODE) {
+            Seq(row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPCalledColName)),
+              row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPSubscriberIDColName)),
+              row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPTransactionStartTimeColName)),
+              row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPCallTimestampColName)), 0)
+          } else {
+            Seq(row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPCalledColName)),
+              row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPSubscriberIDColName)),
+              row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPTransactionStartTimeColName)),
+              row.get(regDFSchema.fieldIndex(ControlPlaneUtils.getCPCallTimestampColName)), 1)
+          }
+        }
+        buffer += Row.fromSeq(callingPartyTuple)
+        buffer += Row.fromSeq(calledPartyTuple)
+        buffer
+      })(encoder)
+      
+      
+      
+      
