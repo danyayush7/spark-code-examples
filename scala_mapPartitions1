@@ -1,7 +1,6 @@
 val regDFSchema = regDF.schema
       val registrationDfSchema = regDF
-        .selectExpr(ControlPlaneUtils.getCPCalledColName + " as " + ControlPlaneUtils.getMSISDNColumnName, ControlPlaneUtils.getCPSubscriberIDColName,
-          ControlPlaneUtils.getCPTransactionStartTimeColName, ControlPlaneUtils.getCPCallTimestampColName, "1 as reachable").schema
+        .selectExpr("").schema
       val encoder = RowEncoder.apply(registrationDfSchema)
       val registrationDF = regDF.flatMap(row => {
         var buffer = mutable.Buffer.empty[Row]
