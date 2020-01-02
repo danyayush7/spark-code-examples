@@ -1,0 +1,11 @@
+partitionedDF.rdd.mapPartitionsWithIndex((index, iter) =>  Func(arg)
+
+
+Inside Func:
+var mapOFschema: scala.collection.immutable.Map[String, Int] = null
+var seq: mutable.Buffer[Any] = null
+seq = row.toSeq.toBuffer
+var row = Row.fromSeq(Seq[Any](seq: _*))
+mapOFschema = schema.map(x => x.name).zipWithIndex.toMap
+seq(mapOFschema(ControlPlaneUtils.getErrorCodeColName)).asInstanceOf[Int]
+row.getAs[Long](ControlPlaneUtils.getCPResponseTimeColName)
