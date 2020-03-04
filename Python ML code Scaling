@@ -1,0 +1,15 @@
+def prediction(iter,config,index_cols,groupby_cols):
+    print("Inside prediction {}".format(datetime.now()))
+    if iter:
+        rows = (row_.asDict() for row_ in iter)
+        pdf = pd.DataFrame(rows)
+        if len(pdf) > 0:
+            #ML code where pdf is pandas dataframe now
+        print("Exiting prediction {}".format(datetime.now()))
+        return pdf.to_dict(orient='records')
+
+outputSchema = StructType([StructField("master_call_id",StringType(),True),StructField("lsrid",StringType(),True),StructField("lsr_timestamp",LongType(),True),StructField("end_cell_id",LongType(),True),StructField("rules",StringType(),True),StructField("probas",DoubleType(),True),StructField("labels",DoubleType(),True),StructField("weights",DoubleType(),True),StructField("year",LongType(),True),StructField("month",LongType(),True),StructField("day",LongType(),True),StructField("hour",LongType(),True),StructField("minute",LongType(),True)])
+outputDf = spark.createDataFrame
+
+
+NOTE: This technique scales prediction not training.
